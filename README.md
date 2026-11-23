@@ -1,5 +1,16 @@
 # Netor
 
+## Enterprise edition
+
+We build and deploy a paid Enterprise edition to order. Examples of what we can develop and extend for your organization are listed below.
+
+- Central control for browser profile policies across workstations, with managed extensions and proxy settings.
+- Integration with a company identity provider and internal systems for profile provisioning.
+- Role-based profile assignment for teams, contractors and administrators.
+
+For an Enterprise edition or custom development, contact us at [verobots.eu](https://verobots.eu/) or [olarian.com](https://olarian.com/).
+
+
 Netor is a Windows desktop browser built on Chromium. It keeps browser sessions in separate profiles and offers tab groups, a local vault, and keyboard clipboard slots. Browsing works with a local profile and needs no account on a Netor server.
 
 ## Use Netor

@@ -10,6 +10,7 @@
  *   §4 Ciclul de viata
  */
 const { app, BrowserWindow, screen, Menu } = require('electron');
+const { showEnterprise } = require('./enterprise.cjs');
 const path = require('path');
 const fs = require('fs');
 
@@ -57,7 +58,7 @@ function createWindow(store) {
     webPreferences: { preload: path.join(__dirname, 'preload.js'), contextIsolation: true, nodeIntegration: false, webviewTag: true, spellcheck: true },
   });
   if (saved.maximized) mainWindow.maximize();
-  mainWindow.once('ready-to-show', () => mainWindow.show());
+  mainWindow.once('ready-to-show', () => { mainWindow.show(); showEnterprise(mainWindow); });
   const remember = () => {
     if (mainWindow.isDestroyed()) return;
     store.state.window = { ...mainWindow.getNormalBounds(), maximized: mainWindow.isMaximized() };

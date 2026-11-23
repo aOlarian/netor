@@ -1,0 +1,103 @@
+/* MAP
+ * Scop: Componente comune: meniuri contextuale, modale, toast, tooltip, pastila sloturi, bara de cautare in
+ *       pagina, grila de teme, selectoare iconita/culoare, camp folder, editor proxy, fereastra Setari.
+ * Legaturi: ui-kit.js, settings.js, autofill.js, stage.js
+ * Sectiuni:
+ *   §1 Meniu contextual
+ *   §2 Modal, toast, tooltip
+ *   §3 Pastila sloturi, cautare in pagina, stari goale
+ *   §4 Teme, selectoare, folder, proxy
+ *   §5 Fereastra Setari
+ */
+
+/* §1 Meniu contextual */
+.menu-layer { position: fixed; inset: 0; z-index: 1000; pointer-events: none; }
+.menu-layer.open { pointer-events: auto; }
+.nx-menu { position: fixed; min-width: 220px; max-width: 380px; background: var(--surface); color: var(--text); border: 1px solid var(--border);
+  border-radius: 10px; box-shadow: var(--shadow); padding: 5px; font-size: 13px; }
+.nx-submenu { position: absolute; display: none; z-index: 2; max-height: 70vh; overflow-y: auto; }
+.nx-menu-item:hover > .nx-submenu { display: block; }
+.nx-menu-item { position: relative; display: flex; align-items: center; gap: 8px; padding: 6px 10px; border-radius: 6px; cursor: default; white-space: nowrap; }
+.nx-menu-item:hover { background: color-mix(in srgb, var(--accent) 14%, transparent); }
+.nx-menu-item.disabled { opacity: .45; }
+.nx-menu-item.disabled:hover { background: transparent; }
+.nx-menu-item.danger { color: var(--danger); }
+.nx-mi-icon { width: 18px; text-align: center; flex-shrink: 0; font-size: 13px; }
+.nx-mi-label { flex: 1; overflow: hidden; text-overflow: ellipsis; display: flex; align-items: center; gap: 6px; }
+.nx-mi-hint { color: var(--muted); font-size: 11.5px; margin-left: 12px; }
+.nx-menu-sep { height: 1px; background: var(--border); margin: 4px 6px; }
+.nx-menu-header { font-size: 11px; color: var(--muted); padding: 4px 10px 2px; text-transform: uppercase; letter-spacing: .04em; }
+.dl-row { display: flex; flex-direction: column; } .dl-row small { color: var(--muted); }
+
+/* §2 Modal, toast, tooltip */
+.modal-layer { position: fixed; inset: 0; z-index: 900; pointer-events: none; }
+.modal-layer.open { pointer-events: auto; }
+.nx-modal-backdrop { position: absolute; inset: 0; background: rgba(15, 17, 20, .38); display: grid; place-items: center; animation: fade .12s ease; }
+.nx-modal { background: var(--surface); color: var(--text); border-radius: 14px; box-shadow: var(--shadow); max-height: 90vh; display: flex; flex-direction: column;
+  border: 1px solid var(--border); animation: pop .14s ease; user-select: text; }
+.nx-modal.wide { height: min(760px, 90vh); }
+.nx-modal-head { display: flex; align-items: center; justify-content: space-between; padding: 12px 12px 10px 18px; font-weight: 650; font-size: 14.5px; border-bottom: 1px solid var(--border); }
+.nx-modal-body { padding: 16px 18px; overflow: auto; flex: 1; }
+.modal-layer.recording .nx-modal-backdrop { background: transparent; pointer-events: none; place-items: end; padding: 16px; }
+.modal-layer.recording .nx-modal { pointer-events: auto; width: 440px !important; height: 52vh; }
+.modal-layer.recording .tpl-grid { grid-template-columns: 1fr; } .modal-layer.recording .tpl-grid > .form-col:first-child { display: none; }
+@keyframes fade { from { opacity: 0; } } @keyframes pop { from { transform: scale(.97); opacity: 0; } }
+.form-col { display: flex; flex-direction: column; gap: 12px; }
+.toast-layer { position: fixed; left: 50%; bottom: 22px; transform: translateX(-50%); z-index: 1100; display: flex; flex-direction: column; gap: 8px; align-items: center; pointer-events: none; }
+.nx-toast { background: #202124; color: #fff; padding: 10px 16px; border-radius: 10px; box-shadow: var(--shadow); max-width: 560px; font-size: 13px; transition: opacity .3s, transform .3s; }
+.nx-toast.warn { background: #8a5300; } .nx-toast.error { background: #b3261e; }
+.nx-toast.out { opacity: 0; transform: translateY(8px); }
+.nx-tooltip { position: fixed; z-index: 1200; background: #202124; color: #fff; font-size: 12px; padding: 5px 9px; border-radius: 6px; pointer-events: none; white-space: nowrap; box-shadow: 0 2px 8px rgba(0, 0, 0, .3); }
+
+/* §3 Pastila sloturi, cautare in pagina, stari goale */
+.slot-pill { position: fixed; right: calc(var(--minibar-w) + 14px); bottom: 14px; z-index: 800; display: flex; gap: 6px; align-items: center; background: var(--surface);
+  color: var(--text); border: 1px solid var(--border); border-radius: 18px; padding: 5px 10px; box-shadow: var(--shadow); cursor: pointer; max-width: 60vw; overflow: hidden; }
+.app.minibar-left ~ .slot-pill { right: 14px; }
+.slot-pill .sp { display: inline-flex; gap: 5px; align-items: center; font-size: 12px; padding: 1px 8px 1px 2px; border-radius: 10px; background: var(--surface-2); white-space: nowrap; }
+.slot-pill .sp b { background: var(--accent); color: #fff; border-radius: 8px; min-width: 18px; text-align: center; font-size: 11px; }
+.slot-pill .sp.held { outline: 2px solid var(--accent); }
+.slot-num { display: inline-grid; place-items: center; min-width: 22px; height: 22px; border-radius: 6px; background: var(--surface-2); font-weight: 700; font-size: 12px; color: var(--muted); }
+.findbar { position: absolute; top: 46px; right: 16px; z-index: 50; display: flex; gap: 4px; align-items: center; background: var(--surface); border: 1px solid var(--border);
+  border-radius: 10px; padding: 6px; box-shadow: var(--shadow); }
+.findbar .inp { width: 240px; height: 30px; } .find-count { color: var(--muted); font-size: 12px; min-width: 40px; text-align: center; }
+.empty, .empty-stage { color: var(--muted); padding: 22px 12px; text-align: center; font-size: 13px; }
+.empty-stage { margin: auto; }
+.locked-box, .pin-box { display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 24px 8px; text-align: center; color: var(--muted); }
+.pin-inp { text-align: center; font-size: 18px; letter-spacing: .3em; height: 42px; }
+.vf-err { color: var(--danger); font-size: 12.5px; min-height: 16px; }
+
+/* §4 Teme, selectoare, folder, proxy */
+.theme-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(118px, 1fr)); gap: 10px; }
+.theme-card { border: 2px solid transparent; border-radius: 10px; padding: 4px; background: transparent; cursor: pointer; color: var(--text); }
+.theme-card:hover { border-color: var(--border); } .theme-card.selected { border-color: var(--accent); }
+.theme-mock { height: 68px; border-radius: 7px; overflow: hidden; display: flex; flex-direction: column; border: 1px solid rgba(0, 0, 0, .12); }
+.theme-mock-tabs { display: flex; gap: 3px; padding: 6px 6px 0; height: 16px; } .theme-mock-tabs span { width: 34px; height: 10px; }
+.theme-mock-toolbar { display: flex; align-items: center; gap: 4px; padding: 4px 6px; } .theme-mock-toolbar span { flex: 1; height: 8px; border-radius: 4px; }
+.theme-mock-toolbar i { width: 8px; height: 8px; border-radius: 50%; } .theme-mock-page { flex: 1; }
+.inherit-mock { display: grid; place-items: center; font-size: 11px; color: var(--muted); background: var(--surface-2); }
+.theme-card-name { font-size: 12px; padding-top: 5px; text-align: center; }
+.icon-grid, .color-grid { display: flex; flex-wrap: wrap; gap: 5px; }
+.icon-opt { width: 32px; height: 32px; border-radius: 8px; border: 2px solid transparent; background: var(--surface-2); cursor: pointer; font-size: 16px; }
+.color-opt { width: 24px; height: 24px; border-radius: 50%; border: 2px solid var(--border); cursor: pointer; }
+.icon-opt.selected, .color-opt.selected { border-color: var(--accent); box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 30%, transparent); }
+.color-custom { width: 24px; height: 24px; border-radius: 50%; overflow: hidden; border: 2px dashed var(--border); position: relative; cursor: pointer; }
+.color-custom input { position: absolute; inset: -6px; width: 40px; height: 40px; border: 0; cursor: pointer; }
+.folder-field { display: flex; align-items: center; gap: 8px; border: 1px solid var(--border); border-radius: 8px; padding: 5px 6px 5px 10px; background: var(--surface); }
+.folder-path { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--text); font-size: 12.5px; }
+.proxy-editor { display: flex; flex-direction: column; gap: 10px; } .proxy-fields { display: flex; flex-direction: column; gap: 10px; }
+.inp-wrap { display: flex; gap: 4px; align-items: center; } .inp-wrap .inp { flex: 1; }
+.bs-grid, .tpl-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+.avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--accent); color: #fff; display: grid; place-items: center; font-weight: 700; font-size: 17px; }
+
+/* §5 Fereastra Setari */
+.settings-modal .nx-modal-body { padding: 0; overflow: hidden; }
+.settings-shell { display: flex; height: 100%; }
+.settings-nav { width: 230px; border-right: 1px solid var(--border); padding: 10px 8px; overflow-y: auto; background: var(--surface-2); flex-shrink: 0; }
+.settings-nav button { width: 100%; display: flex; align-items: center; gap: 10px; padding: 8px 12px; border: 0; border-radius: 8px; background: transparent; cursor: pointer; text-align: left; color: var(--text); }
+.settings-nav button:hover { background: color-mix(in srgb, var(--text) 7%, transparent); }
+.settings-nav button.on { background: color-mix(in srgb, var(--accent) 16%, transparent); color: var(--accent); font-weight: 600; }
+.settings-nav button svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.settings-nav-sep { font-size: 11px; color: var(--muted); padding: 14px 12px 4px; text-transform: uppercase; letter-spacing: .05em; }
+.settings-content { flex: 1; overflow-y: auto; padding: 22px 28px; }
+.settings-content .card + .card { margin-top: 12px; }
+.small-hint { font-size: 11.5px; margin-top: 6px; }

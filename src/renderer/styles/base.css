@@ -1,0 +1,121 @@
+/* MAP
+ * Scop: Stiluri de baza Netor: variabile implicite, reset, layout fereastra (bara de titlu cu taburi, minibar,
+ *       bara de favorite, scena cu panouri, sidebar), butoane, campuri si elemente de formular.
+ * Legaturi: themes.css (forme per familie de browser), components.css (meniuri, modale, seif, agenti)
+ * Sectiuni:
+ *   §1 Variabile si reset
+ *   §2 Layout fereastra (titlebar, minibar, workarea, stage, sidebar)
+ *   §3 Butoane si campuri
+ */
+
+/* §1 Variabile si reset */
+:root {
+  --frame: #DEE1E6; --frame-fg: #3C4043; --tab-hover: #E8EAED; --tab-active: #FFFFFF; --toolbar: #FFFFFF;
+  --url-bg: #F1F3F4; --url-fg: #202124; --accent: #1A73E8; --surface: #FFFFFF; --surface-2: #F1F3F4;
+  --text: #202124; --muted: #5F6368; --border: #DADCE0; --danger: #D93025; --success: #188038; --warning: #E37400;
+  --titlebar-h: 40px; --tab-h: 32px; --tab-radius: 8px; --favbar-h: 30px; --panebar-h: 42px;
+  --minibar-w: 52px; --minibar-bg: #1F1F23; --wco-w: 138px;
+  --font: 'Segoe UI Variable Text', 'Segoe UI', system-ui, sans-serif;
+  --shadow: 0 8px 28px rgba(0, 0, 0, .18), 0 2px 6px rgba(0, 0, 0, .12);
+}
+:root[data-mode="dark"] { --danger: #F28B82; --success: #81C995; --warning: #FDD663; --shadow: 0 10px 30px rgba(0, 0, 0, .5); }
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; overflow: hidden; }
+body { font: 13px/1.4 var(--font); color: var(--text); background: var(--frame); user-select: none; }
+input, textarea, select, button { font: inherit; color: inherit; }
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-thumb { background: color-mix(in srgb, var(--muted) 45%, transparent); border-radius: 8px; border: 2px solid transparent; background-clip: padding-box; }
+::-webkit-scrollbar-track { background: transparent; }
+.hidden { display: none !important; }
+
+/* §2 Layout fereastra */
+.app { display: flex; flex-direction: column; height: 100vh; }
+.titlebar { height: var(--titlebar-h); display: flex; align-items: flex-end; background: var(--frame); color: var(--frame-fg);
+  -webkit-app-region: drag; padding-left: 8px; flex-shrink: 0; }
+.titlebar > * { -webkit-app-region: no-drag; }
+.titlebar .drag-fill { flex: 1; align-self: stretch; -webkit-app-region: drag; min-width: 24px; }
+.titlebar-tools { display: flex; align-items: center; gap: 2px; height: 100%; padding: 0 6px; }
+.wco-spacer { width: var(--wco-w); flex-shrink: 0; align-self: stretch; -webkit-app-region: drag; }
+.body-row { flex: 1; display: flex; min-height: 0; }
+.app.minibar-left .body-row { flex-direction: row-reverse; }
+.workarea { flex: 1; display: flex; flex-direction: column; min-width: 0; background: var(--toolbar); }
+.stage-row { flex: 1; display: flex; min-height: 0; }
+.stage { flex: 1; position: relative; min-width: 0; background: var(--surface); }
+.pane-layer { position: absolute; inset: 0; display: flex; }
+.webview-layer { position: absolute; inset: 0; pointer-events: none; }
+.webview-layer webview { position: absolute; pointer-events: auto; background: #fff; display: flex; border: 0; }
+.webview-layer webview.wv-hidden { visibility: hidden; pointer-events: none; }
+/* Tab treaz al unui agent: un tab complet acoperit se opreste din randat dupa prima schimbare (Chromium nu-i
+   mai deseneaza cadrele); ramane deasupra, dar se vad doar 2px la 1% opacitate, adica nimic, si fara mouse */
+.webview-layer webview.wv-awake { z-index: 9; opacity: .01; clip-path: inset(calc(100% - 2px) 0 0 calc(100% - 2px)); pointer-events: none; }
+.stage.dragging .webview-layer webview { pointer-events: none; }
+
+.minibar { width: var(--minibar-w); background: var(--minibar-bg); display: flex; flex-direction: column; align-items: center;
+  padding: 8px 0; gap: 8px; flex-shrink: 0; border-left: 1px solid rgba(0, 0, 0, .25); }
+.app.minibar-left .minibar { border-left: 0; border-right: 1px solid rgba(0, 0, 0, .25); }
+.minibar-list { display: flex; flex-direction: column; gap: 9px; align-items: center; overflow-y: auto; overflow-x: hidden; padding: 2px 0; }
+.minibar-sep { width: 26px; height: 1px; background: rgba(255, 255, 255, .14); }
+.mb-btn { width: 36px; height: 36px; border-radius: 11px; border: 0; cursor: pointer; display: grid; place-items: center;
+  font-size: 17px; background: rgba(255, 255, 255, .07); color: #E8EAED; transition: transform .12s, border-radius .15s, background .15s; }
+.mb-btn:hover { background: rgba(255, 255, 255, .14); }
+.browser-dot { position: relative; width: 38px; height: 38px; border-radius: 50%; border: 0; cursor: pointer; display: grid;
+  place-items: center; font-size: 18px; transition: border-radius .18s, transform .12s; box-shadow: 0 1px 3px rgba(0, 0, 0, .35); }
+.browser-dot:hover { border-radius: 13px; }
+.browser-dot.active { border-radius: 13px; }
+.browser-dot.active::before { content: ''; position: absolute; right: -8px; top: 8px; bottom: 8px; width: 4px; border-radius: 4px; background: #fff; }
+.app.minibar-left .browser-dot.active::before { right: auto; left: -8px; }
+.browser-dot .dot-badge { position: absolute; bottom: -3px; right: -3px; font-size: 9px; font-weight: 700; padding: 1px 4px;
+  border-radius: 6px; background: #111; color: #fff; border: 1px solid rgba(255, 255, 255, .3); }
+.browser-dot.drag-over { transform: scale(1.12); }
+
+.sidebar { width: 360px; display: flex; flex-direction: column; background: var(--surface); border-left: 1px solid var(--border);
+  position: relative; flex-shrink: 0; min-width: 280px; max-width: 70vw; }
+.sidebar-resize { position: absolute; left: -3px; top: 0; bottom: 0; width: 6px; cursor: col-resize; z-index: 2; }
+.sidebar-head { height: 40px; display: flex; align-items: center; gap: 8px; padding: 0 8px 0 14px; border-bottom: 1px solid var(--border); font-weight: 600; }
+.sidebar-head .grow { flex: 1; }
+.sidebar-body { flex: 1; overflow: auto; padding: 12px; display: flex; flex-direction: column; gap: 10px; user-select: text; }
+
+/* §3 Butoane si campuri */
+.icon-btn { width: 30px; height: 30px; border: 0; border-radius: 8px; background: transparent; cursor: pointer; display: grid;
+  place-items: center; color: inherit; font-size: 14px; flex-shrink: 0; position: relative; }
+.icon-btn:hover { background: color-mix(in srgb, currentColor 11%, transparent); }
+.icon-btn.active { background: color-mix(in srgb, var(--accent) 18%, transparent); color: var(--accent); }
+.icon-btn:disabled { opacity: .35; cursor: default; background: transparent; }
+.icon-btn svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.icon-btn .badge { position: absolute; top: 2px; right: 2px; min-width: 14px; height: 14px; border-radius: 7px; background: var(--accent);
+  color: #fff; font-size: 9px; font-weight: 700; display: grid; place-items: center; padding: 0 3px; }
+.btn { height: 32px; padding: 0 14px; border-radius: 8px; border: 1px solid var(--border); background: var(--surface-2); cursor: pointer;
+  font-weight: 500; display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
+.btn:hover { filter: brightness(.97); border-color: color-mix(in srgb, var(--accent) 45%, var(--border)); }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+:root[data-mode="dark"] .btn.primary { color: #111; }
+.btn.danger { background: transparent; border-color: var(--danger); color: var(--danger); }
+.btn.ghost { background: transparent; }
+.btn.small { height: 26px; padding: 0 9px; font-size: 12px; border-radius: 6px; }
+.btn:disabled { opacity: .5; cursor: default; }
+.inp, select.inp, textarea.inp { width: 100%; height: 34px; border: 1px solid var(--border); border-radius: 8px; padding: 0 10px;
+  background: var(--surface); color: var(--text); outline: none; user-select: text; }
+textarea.inp { height: auto; min-height: 80px; padding: 8px 10px; resize: vertical; line-height: 1.45; }
+.inp:focus { border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent); }
+.fld { display: flex; flex-direction: column; gap: 5px; font-size: 12px; color: var(--muted); }
+.fld > span { font-weight: 600; }
+.fld .help { font-weight: 400; font-size: 11.5px; }
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+.row { display: flex; gap: 8px; align-items: center; }
+.row-end { display: flex; gap: 8px; justify-content: flex-end; margin-top: 14px; }
+.muted-text { color: var(--muted); }
+.switch { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--border); cursor: pointer; }
+.switch:last-child { border-bottom: 0; }
+.switch .sw-text { display: flex; flex-direction: column; } .switch .sw-text small { color: var(--muted); }
+.switch input { appearance: none; width: 36px; height: 20px; border-radius: 10px; background: var(--border); position: relative; cursor: pointer; flex-shrink: 0; transition: background .15s; }
+.switch input::after { content: ''; position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; border-radius: 50%; background: #fff; transition: left .15s; box-shadow: 0 1px 2px rgba(0, 0, 0, .3); }
+.switch input:checked { background: var(--accent); }
+.switch input:checked::after { left: 18px; }
+.seg { display: inline-flex; border: 1px solid var(--border); border-radius: 9px; padding: 2px; background: var(--surface-2); gap: 2px; flex-wrap: wrap; }
+.seg button { border: 0; background: transparent; padding: 5px 12px; border-radius: 7px; cursor: pointer; color: var(--muted); }
+.seg button.on { background: var(--surface); color: var(--text); box-shadow: 0 1px 3px rgba(0, 0, 0, .15); font-weight: 600; }
+.card { border: 1px solid var(--border); border-radius: 10px; padding: 12px; background: var(--surface); }
+.section-title { font-size: 15px; font-weight: 650; margin: 0 0 4px; color: var(--text); }
+.section-sub { color: var(--muted); margin: 0 0 14px; font-size: 12.5px; }
+code, .mono { font-family: 'Cascadia Mono', Consolas, monospace; font-size: 12px; }

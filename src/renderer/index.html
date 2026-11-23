@@ -1,0 +1,100 @@
+<!-- MAP
+  Scop: Fereastra Netor: bara de titlu cu taburi si unelte, minibarul de browsere, bara de favorite,
+        scena cu panouri (tab unic sau grup) peste care stau webview-urile, sidebar-ul din dreapta si straturile
+        pentru meniuri, modale, notificari si pastila cu sloturi.
+  Legaturi: styles/*.css, js/*.js (ordinea scripturilor conteaza: utilitare -> module -> app.js)
+  Sectiuni:
+    §1 Bara de titlu (taburi + unelte)
+    §2 Minibar + zona de lucru (favorite, scena, sidebar)
+    §3 Straturi globale si scripturi
+-->
+<!DOCTYPE html>
+<html lang="ro" data-family="chrome" data-mode="light">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data: https: http: netor:; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' https: http:;">
+  <title>Netor</title>
+  <link rel="stylesheet" href="styles/base.css">
+  <link rel="stylesheet" href="styles/themes.css">
+  <link rel="stylesheet" href="styles/components.css">
+  <link rel="stylesheet" href="styles/panels.css">
+</head>
+<body>
+  <div id="app" class="app">
+    <!-- §1 Bara de titlu -->
+    <header class="titlebar" id="titlebar">
+      <div class="tabstrip" id="tabstrip"></div>
+      <button class="newtab-btn" id="btnNewTab" title="Tab nou (Ctrl+T)">+</button>
+      <div class="drag-fill"></div>
+      <div class="titlebar-tools" id="titlebarTools">
+        <button class="icon-btn" id="btnExtensions" data-tip="Extensii"></button>
+        <button class="icon-btn hidden" id="btnDownloads" data-tip="Descărcări (Ctrl+J)"></button>
+        <button class="icon-btn" id="btnNotes" data-tip="Note"></button>
+        <button class="icon-btn" id="btnAgents" data-tip="Agenți AI"></button>
+        <button class="icon-btn" id="btnVault" data-tip="Date (seif cu PIN)"></button>
+        <button class="icon-btn" id="btnTemplates" data-tip="Șabloane de automatizare"></button>
+        <button class="icon-btn" id="btnMenu" data-tip="Meniu Netor"></button>
+      </div>
+      <div class="wco-spacer"></div>
+    </header>
+
+    <!-- §2 Minibar + zona de lucru -->
+    <div class="body-row">
+      <div class="workarea">
+        <div class="favbar" id="favbar"></div>
+        <div class="stage-row">
+          <div class="stage" id="stage">
+            <div class="pane-layer" id="paneLayer"></div>
+            <div class="webview-layer" id="webviewLayer"></div>
+            <div class="win-overlay hidden" id="winOverlay"><div class="win-guides"><i class="v2"></i><i class="h2"></i><i class="v3a"></i><i class="v3b"></i><i class="h3a"></i><i class="h3b"></i></div>
+              <div class="win-ghost hidden"></div><div class="win-drop hidden"></div></div>
+            <div class="findbar hidden" id="findbar"></div>
+          </div>
+          <aside class="sidebar hidden" id="sidebar">
+            <div class="sidebar-resize" id="sidebarResize"></div>
+            <div class="sidebar-head"><span id="sidebarTitle"></span><span class="grow"></span><span id="sidebarActions" class="row"></span>
+              <button class="icon-btn" id="btnSidebarClose" title="Închide panoul"></button></div>
+            <div class="sidebar-body" id="sidebarBody"></div>
+          </aside>
+        </div>
+      </div>
+      <aside class="minibar" id="minibar">
+        <button class="mb-btn" id="btnGlobalSettings" title="Setări globale"></button>
+        <div class="minibar-sep"></div>
+        <div class="minibar-list" id="minibarList"></div>
+        <button class="mb-btn" id="btnAddBrowser" title="Browser nou">+</button>
+      </aside>
+    </div>
+  </div>
+
+  <!-- §3 Straturi globale si scripturi -->
+  <div id="slotPill" class="slot-pill hidden"></div>
+  <div id="menuLayer" class="menu-layer"></div>
+  <div id="modalLayer" class="modal-layer"></div>
+  <div id="toastLayer" class="toast-layer"></div>
+  <div id="tooltip" class="nx-tooltip hidden"></div>
+
+  <script src="js/icons.js"></script>
+  <script src="js/ui-kit.js"></script>
+  <script src="js/themes.js"></script>
+  <script src="js/webviews.js"></script>
+  <script src="js/tabstrip.js"></script>
+  <script src="js/group-geom.js"></script>
+  <script src="js/group-drag.js"></script>
+  <script src="js/stage.js"></script>
+  <script src="js/favorites.js"></script>
+  <script src="js/minibar.js"></script>
+  <script src="js/vault-forms.js"></script>
+  <script src="js/vault-ui.js"></script>
+  <script src="js/autofill.js"></script>
+  <script src="js/notes.js"></script>
+  <script src="js/agents.js"></script>
+  <script src="js/templates-ui.js"></script>
+  <script src="js/template-editor.js"></script>
+  <script src="js/settings.js"></script>
+  <script src="js/settings-panes.js"></script>
+  <script src="js/tools-menu.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/app-actions.js"></script>
+</body>
+</html>

@@ -1,0 +1,99 @@
+/* MAP
+ * Scop: Stilurile panourilor: seif (taburi cu iconite, lista, detalii, randuri copiere), note, chatul
+ *       agentului, sabloane (carduri, progres, editor pasi), istoric, fereastra de date, panouri din grup.
+ * Legaturi: vault-ui.js, notes.js, agents.js, templates-ui.js, template-editor.js, tools-menu.js, stage.js
+ * Sectiuni:
+ *   §1 Iconite generale si panouri din scena
+ *   §2 Seif si fereastra de date
+ *   §3 Note
+ *   §4 Chat agent
+ *   §5 Sabloane, istoric
+ */
+
+/* §1 Iconite generale si panouri din scena */
+svg { fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+.pane-icon { display: grid; place-items: center; width: 28px; color: var(--muted); }
+.pane > .pane-body > .chat, .pane > .pane-body .note-title { margin: 0; }
+.pane .pane-body:not([data-wv-slot]) { padding: 0; overflow: hidden; }
+body.fullscreen .titlebar, body.fullscreen .minibar, body.fullscreen .favbar, body.fullscreen .pane-bar, body.fullscreen .sidebar { display: none !important; }
+#btnVault.unlocked { color: var(--success); }
+.search-box { display: flex; align-items: center; gap: 6px; border: 1px solid var(--border); border-radius: 8px; padding: 0 0 0 10px; background: var(--surface); color: var(--muted); }
+.search-box .inp { border: 0; box-shadow: none !important; padding-left: 2px; }
+.grow { flex: 1; }
+
+/* §2 Seif si fereastra de date */
+.vault-tabs { display: flex; gap: 2px; background: var(--surface-2); padding: 3px; border-radius: 10px; }
+.vault-tabs button { flex: 1; height: 34px; border: 0; border-radius: 8px; background: transparent; cursor: pointer; color: var(--muted); display: grid; place-items: center; }
+.vault-tabs button.on { background: var(--surface); color: var(--accent); box-shadow: 0 1px 3px rgba(0, 0, 0, .14); }
+.vault-toolbar { margin: 10px 0; } .vault-toolbar .search-box { flex: 1; }
+.vault-list { display: flex; flex-direction: column; gap: 6px; }
+.vault-item { border: 1px solid var(--border); border-radius: 10px; background: var(--surface); overflow: hidden; }
+.vi-head { display: flex; align-items: center; gap: 10px; padding: 8px 6px 8px 10px; cursor: pointer; }
+.vi-head:hover { background: var(--surface-2); }
+.vi-icon { width: 30px; height: 30px; border-radius: 8px; background: color-mix(in srgb, var(--accent) 14%, transparent); color: var(--accent); display: grid; place-items: center; flex-shrink: 0; }
+.vi-text { flex: 1; min-width: 0; display: flex; flex-direction: column; } .vi-text small { color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.vi-body { border-top: 1px solid var(--border); padding: 8px 10px; background: var(--surface-2); }
+.vf-row { display: flex; align-items: center; gap: 8px; padding: 5px 0; border-bottom: 1px dashed var(--border); }
+.vf-row:last-of-type { border-bottom: 0; }
+.vf-row .k { width: 130px; color: var(--muted); font-size: 12px; flex-shrink: 0; }
+.vf-row .v { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; user-select: text; }
+.vf-row .v.secret { letter-spacing: .1em; }
+.data-window .data-rows { margin-top: 12px; display: flex; flex-direction: column; }
+.data-window .vf-row { padding: 7px 0; } .data-window .row .inp { flex: 1; }
+
+/* §3 Note */
+.note-list { display: flex; flex-direction: column; gap: 6px; margin-top: 8px; }
+.note-item { padding: 9px 12px; border: 1px solid var(--border); border-radius: 10px; cursor: pointer; display: flex; flex-direction: column; gap: 2px; background: var(--surface); }
+.note-item:hover { border-color: var(--accent); } .note-item b { display: flex; align-items: center; gap: 6px; }
+.note-item small { color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.note-host { display: flex; flex-direction: column; flex: 1; min-height: 300px; }
+.pane-body .note-title, .note-host .note-title { border: 0; border-bottom: 1px solid var(--border); background: transparent; font-size: 16px; font-weight: 650; padding: 12px 16px; outline: none; color: var(--text); }
+.note-area { flex: 1; border: 0; resize: none; padding: 12px 16px; background: transparent; color: var(--text); outline: none; font: 14px/1.6 var(--font); user-select: text; min-height: 260px; }
+.note-foot { padding: 4px 16px 8px; font-size: 11.5px; }
+.pane .pane-body > .note-title { flex-shrink: 0; }
+
+/* §4 Chat agent */
+.chat { display: flex; flex-direction: column; height: 100%; min-height: 0; flex: 1; }
+.sidebar-body > .chat { margin: -12px; height: calc(100% + 24px); }
+.agents-pane { display: flex; flex-direction: column; height: 100%; min-height: 0; }
+.agents-pane-head { display: flex; gap: 6px; padding: 8px 10px; border-bottom: 1px solid var(--border); }
+.agents-pane-list { flex: 1; overflow: auto; padding: 10px; display: flex; flex-direction: column; gap: 6px; }
+.chat-top { display: flex; align-items: center; gap: 6px; padding: 8px 10px; border-bottom: 1px solid var(--border); flex-wrap: wrap; }
+.chat-name { flex: 1; min-width: 60px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.chat-model { width: auto; max-width: 190px; height: 28px; font-size: 12px; }
+.loop-box { display: flex; align-items: center; gap: 5px; font-size: 12px; color: var(--muted); }
+.loop-box .inp { width: 54px; height: 28px; padding: 0 6px; }
+.chat-ctx { padding: 5px 12px; font-size: 11.5px; border-bottom: 1px solid var(--border); background: var(--surface-2); }
+.chat-msgs { flex: 1; overflow-y: auto; padding: 12px; display: flex; flex-direction: column; gap: 10px; user-select: text; }
+.msg { max-width: 92%; padding: 9px 12px; border-radius: 12px; line-height: 1.5; word-wrap: break-word; font-size: 13.5px; }
+.msg.user { align-self: flex-end; background: var(--accent); color: #fff; border-bottom-right-radius: 4px; }
+:root[data-mode="dark"] .msg.user { color: #111; }
+.msg.assistant { align-self: flex-start; background: var(--surface-2); border-bottom-left-radius: 4px; }
+.msg.error { align-self: center; color: var(--danger); background: color-mix(in srgb, var(--danger) 10%, transparent); font-size: 12.5px; }
+.msg.sys { align-self: center; color: var(--muted); font-size: 12px; background: transparent; }
+.msg.tool { align-self: flex-start; padding: 0 12px; font-size: 12px; color: var(--muted); }
+.msg.tool pre, .msg pre { white-space: pre-wrap; max-height: 220px; overflow: auto; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 8px; font-size: 11.5px; }
+.msg.archived { opacity: .55; }
+.msg a { color: inherit; text-decoration: underline; cursor: pointer; }
+.tool-call { display: inline-flex; align-items: center; gap: 5px; font-size: 11.5px; color: var(--muted); margin-top: 4px; }
+.tool-call code { font-size: 11px; }
+.chat-compose { display: flex; gap: 6px; padding: 10px; border-top: 1px solid var(--border); align-items: flex-end; }
+.chat-compose textarea { min-height: 40px; max-height: 180px; resize: vertical; }
+.chat-compose .btn { height: 40px; }
+.chat.busy .chat-msgs::after { content: 'Lucrez…'; color: var(--muted); font-size: 12px; align-self: flex-start; animation: pulse 1.2s infinite; }
+@keyframes pulse { 50% { opacity: .4; } }
+
+/* §5 Sabloane, istoric */
+.tpl-card { border: 1px solid var(--border); border-radius: 10px; padding: 10px 10px 10px 12px; background: var(--surface); display: flex; flex-direction: column; gap: 4px; }
+.run-box { margin-top: 8px; border-top: 1px dashed var(--border); padding-top: 8px; display: flex; flex-direction: column; gap: 6px; }
+.progress { height: 6px; border-radius: 3px; background: var(--surface-2); overflow: hidden; } .progress span { display: block; height: 100%; background: var(--accent); transition: width .3s; }
+.run-wait { background: color-mix(in srgb, var(--warning) 16%, transparent); border-radius: 8px; padding: 8px; font-size: 12.5px; display: flex; flex-direction: column; gap: 6px; }
+.step-list { display: flex; flex-direction: column; gap: 4px; overflow-y: auto; max-height: 52vh; }
+.step-row { display: flex; align-items: center; gap: 6px; border: 1px solid var(--border); border-radius: 8px; padding: 4px 4px 4px 8px; background: var(--surface); }
+.step-txt { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 12.5px; }
+.hist-list { margin-top: 10px; display: flex; flex-direction: column; max-height: 60vh; overflow-y: auto; }
+.hist-row { display: grid; grid-template-columns: 150px 1fr auto; grid-template-rows: auto auto; column-gap: 12px; padding: 6px 8px; border-radius: 8px; cursor: pointer; align-items: center; }
+.hist-row:hover { background: var(--surface-2); } .hist-row .muted-text { grid-row: span 2; font-size: 12px; }
+.hist-title { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } .hist-row small { color: var(--muted); grid-column: 2; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.hist-row .icon-btn { grid-row: 1 / span 2; grid-column: 3; }
+.ext-list { display: flex; flex-direction: column; gap: 8px; }

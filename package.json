@@ -1,0 +1,59 @@
+{
+  "name": "netor",
+  "productName": "Netor",
+  "version": "1.2.0",
+  "description": "Chromium desktop browser with separate profiles, tab groups and a local vault",
+  "main": "main.js",
+  "author": "VEROBOTS S.R.L.",
+  "license": "MIT",
+  "scripts": {
+    "start": "electron .",
+    "test": "node test/e2e.js",
+    "dist": "electron-builder --win nsis --x64 -c.win.signAndEditExecutable=false"
+  },
+  "devDependencies": {
+    "electron": "42.1.0",
+    "electron-builder": "26.15.3"
+  },
+  "build": {
+    "appId": "eu.verobots.netor",
+    "productName": "Netor",
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "build/icon.png"
+    },
+    "nsis": {
+      "oneClick": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Netor Browser",
+      "perMachine": false,
+      "allowElevation": false,
+      "runAfterFinish": true,
+      "artifactName": "netor-install.exe"
+    },
+    "files": [
+      "package.json",
+      "main.js",
+      "preload.js",
+      "preload-page.js",
+      "src/**/*",
+      "build/icon.png"
+    ],
+    "asar": true,
+    "asarUnpack": [
+      "preload-page.js"
+    ],
+    "directories": {
+      "output": "dist",
+      "buildResources": "build"
+    }
+  }
+}

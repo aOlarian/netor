@@ -1,0 +1,70 @@
+<!-- MAP
+  Scop: Pagina "Tab nou" (netor://newtab): ceas, cautare (prin netor://go, motorul ales in setari) si
+        scurtaturile catre favorite (citite din netor://data/favorites). Tema urmeaza modul luminos/intunecat al sistemului.
+  Legaturi: src/main/sessions.js (protocolul netor://)
+  Sectiuni:
+    §1 Stil
+    §2 Continut
+    §3 Script (ceas, favorite)
+-->
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<title>Tab nou</title>
+<style>
+  /* §1 Stil */
+  :root { --bg: #f8f9fa; --fg: #202124; --muted: #5f6368; --card: #fff; --border: #dadce0; --accent: #1a73e8; }
+  @media (prefers-color-scheme: dark) { :root { --bg: #202124; --fg: #e8eaed; --muted: #9aa0a6; --card: #303134; --border: #3c4043; --accent: #8ab4f8; } }
+  * { box-sizing: border-box; }
+  body { margin: 0; min-height: 100vh; background: var(--bg); color: var(--fg); font: 14px 'Segoe UI', system-ui, sans-serif; display: flex; flex-direction: column; align-items: center; }
+  .clock { margin-top: 14vh; font-size: 64px; font-weight: 300; letter-spacing: -1px; }
+  .date { color: var(--muted); margin-bottom: 28px; text-transform: capitalize; }
+  form { width: min(620px, 90vw); }
+  input { width: 100%; height: 48px; border-radius: 24px; border: 1px solid var(--border); background: var(--card); color: var(--fg); padding: 0 22px; font-size: 16px; outline: none; box-shadow: 0 1px 6px rgba(32, 33, 36, .12); }
+  input:focus { border-color: var(--accent); }
+  .tiles { display: grid; grid-template-columns: repeat(auto-fill, 112px); gap: 12px; justify-content: center; width: min(760px, 92vw); margin-top: 36px; }
+  .tile { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 14px 8px; border-radius: 12px; text-decoration: none; color: var(--fg); }
+  .tile:hover { background: var(--card); }
+  .ic { width: 44px; height: 44px; border-radius: 50%; background: var(--card); display: grid; place-items: center; border: 1px solid var(--border); font-weight: 600; color: var(--accent); }
+  .ic img { width: 22px; height: 22px; }
+  .tile span { font-size: 12.5px; max-width: 100px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+</style>
+</head>
+<body>
+  <!-- §2 Continut -->
+  <div class="clock" id="clock"></div>
+  <div class="date" id="date"></div>
+  <form action="netor://go/" method="get"><input name="q" autofocus autocomplete="off" placeholder="Caută pe web sau scrie o adresă"></form>
+  <div class="tiles" id="tiles"></div>
+  <script>
+    // §3 Script (ceas, favorite)
+    const tick = () => {
+      const d = new Date();
+      document.getElementById('clock').textContent = d.toLocaleTimeString('ro-RO', { hour: '2-digit', minute: '2-digit' });
+      document.getElementById('date').textContent = d.toLocaleDateString('ro-RO', { weekday: 'long', day: 'numeric', month: 'long' });
+    };
+    tick();
+    setInterval(tick, 10000);
+    fetch('netor://data/theme').then((r) => r.json()).then((t) => {
+      const map = { bg: '--bg', fg: '--fg', muted: '--muted', card: '--card', border: '--border', accent: '--accent' };
+      for (const [k, v] of Object.entries(map)) if (t[k]) document.documentElement.style.setProperty(v, t[k]);
+    }).catch(() => {});
+    fetch('netor://data/favorites').then((r) => r.json()).then((list) => {
+      const host = document.getElementById('tiles');
+      for (const f of list.slice(0, 16)) {
+        const a = document.createElement('a');
+        a.className = 'tile';
+        a.href = f.url;
+        const ic = document.createElement('div');
+        ic.className = 'ic';
+        if (f.favicon) { const img = document.createElement('img'); img.src = f.favicon; ic.appendChild(img); } else ic.textContent = (f.title || '?')[0].toUpperCase();
+        const t = document.createElement('span');
+        t.textContent = f.title;
+        a.append(ic, t);
+        host.appendChild(a);
+      }
+    }).catch(() => {});
+  </script>
+</body>
+</html>
